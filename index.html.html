@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Hub Sécurité No-Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-radius: 4px;
+            margin-right: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox.checked {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .tool-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .quick-access {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 1.5em;
+            z-index: 1000;
+        }
+
+        .quick-access:hover {
+            background: #5a6fd8;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Hub Sécurité No-Code</h1>
+            <p>Votre référence interactive pour sécuriser tous vos projets d'automatisation</p>
+        </div>
+
+        <nav class="nav">
+            <button class="nav-btn active" onclick="showSection('checklist')">📋 Checklist Rapide</button>
+            <button class="nav-btn" onclick="showSection('outils')">🔧 Comparaison Outils</button>
+            <button class="nav-btn" onclick="showSection('roles')">👥 Gestion des Rôles</button>
+            <button class="nav-btn" onclick="showSection('integrite')">🛡️ Intégrité Données</button>
+            <button class="nav-btn" onclick="showSection('workflow')">🔄 Workflow Projet</button>
+        </nav>
+
+        <div class="content">
+            <!-- SECTION CHECKLIST RAPIDE -->
+            <div id="checklist" class="section active">
+                <div class="card">
+                    <h3>📋 Checklist Pré-Projet - OBLIGATOIRE</h3>
+                    <p><strong>🚨 Vérifiez ces points AVANT de choisir un outil :</strong></p>
+                    <ul class="checklist">
+                        <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>Chiffrement HTTPS/TLS</strong> : URL commence par "https://"</li>
+                        <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>Serveurs en UE</strong> : Frankfurt, Dublin ou adéquation GDPR</li>
+                        <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>Certifications</strong> : SOC 2, ISO 27001 visibles sur site</li>
+                        <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>Gestion des rôles</strong> : Permissions par utilisateur</li>
+                        <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>Historique/Logs</strong> : Traçabilité des modifications</li>
+                        <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>Sauvegarde/Export</strong> : Récupération des données possible</li>
+                    </ul>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="checklistProgress"></div>
+                    </div>
+                    <p style="text-align: center; margin: 10px 0;"><strong><span id="progressText">0% complété</span></strong></p>
+
+                    <div class="alert alert-danger">
+                        <strong>🛑 STOP ! Si moins de 80% :</strong><br>
+                        → Cherchez une alternative ou contactez le support de l'outil<br>
+                        → Ne signez JAMAIS sans ces garanties de sécurité
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>⚡ Actions Rapides</h3>
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary" onclick="showSection('outils')">🔧 Comparer les Outils</button>
+                        <button class="btn btn-primary" onclick="showSection('roles')">👥 Définir les Rôles</button>
+                        <button class="btn btn-primary" onclick="showSection('workflow')">🔄 Suivre le Workflow</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION COMPARAISON OUTILS -->
+            <div id="outils" class="section">
+                <div class="card">
+                    <h3>🔧 Évaluation Sécurité des Outils No-Code</h3>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h4>🎨 Framer</h4>
+                            <p><strong>✅ Points forts :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>✅ Rôles Viewer/Editor/Admin</li>
+                                <li>✅ Invitation par workspace</li>
+                                <li>✅ Serveurs sécurisés</li>
+                            </ul>
+                            <p><strong>❌ Limites :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>❌ Pas de gestion d'interfaces natives</li>
+                                <li>❌ Contrôle granulaire limité</li>
+                            </ul>
+                            <a href="https://www.framer.com/legal/security/" target="_blank" class="btn btn-primary">Documentation</a>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>🗃️ Airtable</h4>
+                            <p><strong>✅ Points forts :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>✅ 5 niveaux de permissions</li>
+                                <li>✅ Vues partagées granulaires</li>
+                                <li>✅ Historique des révisions</li>
+                                <li>✅ Filtres par utilisateur</li>
+                            </ul>
+                            <p><strong>⚠️ Attention :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>⚠️ Partage libre à surveiller</li>
+                            </ul>
+                            <a href="https://www.airtable.com/company/trust-and-security" target="_blank" class="btn btn-primary">Documentation</a>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>🫧 Bubble</h4>
+                            <p><strong>✅ Points forts :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>✅ Privacy Rules très puissantes</li>
+                                <li>✅ Conditions d'accès par page</li>
+                                <li>✅ Rôles personnalisables</li>
+                                <li>✅ Validation de données avancée</li>
+                            </ul>
+                            <p><strong>⚠️ Attention :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>⚠️ Configuration complexe</li>
+                                <li>⚠️ Tester avec "Run as..."</li>
+                            </ul>
+                            <a href="https://bubble.io/security" target="_blank" class="btn btn-primary">Documentation</a>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>🔗 Make</h4>
+                            <p><strong>✅ Points forts :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>✅ 6 rôles organisation/équipe</li>
+                                <li>✅ Logs d'exécution détaillés</li>
+                                <li>✅ Gestion d'équipes</li>
+                            </ul>
+                            <p><strong>❌ Limites :</strong></p>
+                            <ul style="font-size: 0.9em; margin: 10px 0;">
+                                <li>❌ Pas d'interfaces externes</li>
+                                <li>❌ Accès admin nécessaire</li>
+                            </ul>
+                            <a href="https://www.make.com/en/security" target="_blank" class="btn btn-primary">Documentation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION GESTION DES RÔLES -->
+            <div id="roles" class="section">
+                <div class="card">
+                    <h3>👥 Définir les Rôles - Template Rapide</h3>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h4>🎯 Questions AVANT de créer les rôles :</h4>
+                        <ul class="checklist">
+                            <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>QUI</strong> utilise l'app ? (équipe, clients, partenaires)</li>
+                            <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>QUOI</strong> peut-il faire ? (voir, modifier, créer, supprimer)</li>
+                            <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>OÙ</strong> peut-il accéder ? (toutes pages ou limitées)</li>
+                            <li><div class="checkbox" onclick="toggleCheck(this)"></div> <strong>QUAND</strong> réviser ? (mensuel, changement poste)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h4>👑 Administrateur</h4>
+                            <p><strong>Peut :</strong> TOUT faire</p>
+                            <ul style="font-size: 0.9em;">
+                                <li>✅ Gérer les utilisateurs</li>
+                                <li>✅ Configurer l'application</li>
+                                <li>✅ Accès aux données sensibles</li>
+                                <li>✅ Export/Import</li>
+                            </ul>
+                            <p><strong>Pour :</strong> Chef de projet, responsable technique</p>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>✏️ Éditeur</h4>
+                            <p><strong>Peut :</strong> Ses données + publiques</p>
+                            <ul style="font-size: 0.9em;">
+                                <li>✅ Créer ses contenus</li>
+                                <li>✅ Modifier ses données</li>
+                                <li>✅ Voir données partagées</li>
+                                <li>❌ Pas de gestion utilisateurs</li>
+                            </ul>
+                            <p><strong>Pour :</strong> Équipe opérationnelle</p>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>👁️ Lecteur</h4>
+                            <p><strong>Peut :</strong> Consulter uniquement</p>
+                            <ul style="font-size: 0.9em;">
+                                <li>✅ Voir ses données</li>
+                                <li>✅ Télécharger autorisés</li>
+                                <li>❌ Pas de modification</li>
+                                <li>❌ Pas de création</li>
+                            </ul>
+                            <p><strong>Pour :</strong> Direction, audit, reporting</p>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>🤝 Invité</h4>
+                            <p><strong>Peut :</strong> Accès très limité</p>
+                            <ul style="font-size: 0.9em;">
+                                <li>✅ Pages publiques seulement</li>
+                                <li>✅ Fonctions de base</li>
+                                <li>❌ Pas d'accès aux données</li>
+                                <li>❌ Temporaire</li>
+                            </ul>
+                            <p><strong>Pour :</strong> Démos, prospects, temporaires</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <strong>💡 Règle d'or :</strong> Commencez toujours par le MINIMUM de permissions, puis ajoutez selon les besoins réels.
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION INTÉGRITÉ DES DONNÉES -->
+            <div id="integrite" class="section">
+                <div class="card">
+                    <h3>🛡️ Les 5 Piliers de l'Intégrité des Données</h3>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h4>1️⃣ Validité</h4>
+                            <p><strong>Problème :</strong> Formats incorrects</p>
+                            <p><strong>Exemples :</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>❌ Email sans @</li>
+                                <li>❌ Téléphone avec lettres</li>
+                                <li>❌ Date future pour naissance</li>
+                            </ul>
+                            <p><strong>Solutions :</strong></p>
+                            <ul style="font-size: 0.9em; color: #28a745;">
+                                <li>✅ Bubble : Regex validation</li>
+                                <li>✅ Airtable : Types de champs</li>
+                                <li>✅ Formulaires : Validation JS</li>
+                            </ul>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>2️⃣ Exactitude</h4>
+                            <p><strong>Problème :</strong> Données erronées</p>
+                            <p><strong>Exemples :</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>❌ Prix négatifs</li>
+                                <li>❌ Adresses inexistantes</li>
+                                <li>❌ Codes postaux invalides</li>
+                            </ul>
+                            <p><strong>Solutions :</strong></p>
+                            <ul style="font-size: 0.9em; color: #28a745;">
+                                <li>✅ Make : Modules vérification</li>
+                                <li>✅ APIs de validation</li>
+                                <li>✅ Double contrôle</li>
+                            </ul>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>3️⃣ Consistance</h4>
+                            <p><strong>Problème :</strong> Incohérences</p>
+                            <p><strong>Exemples :</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>❌ Stock affiché ≠ réel</li>
+                                <li>❌ Prix différents par canal</li>
+                                <li>❌ Données dupliquées</li>
+                            </ul>
+                            <p><strong>Solutions :</strong></p>
+                            <ul style="font-size: 0.9em; color: #28a745;">
+                                <li>✅ Airtable : Relations tables</li>
+                                <li>✅ Zapier : Sync temps réel</li>
+                                <li>✅ Source unique vérité</li>
+                            </ul>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>4️⃣ Complétude</h4>
+                            <p><strong>Problème :</strong> Données manquantes</p>
+                            <p><strong>Exemples :</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>❌ Commande sans adresse</li>
+                                <li>❌ Contact sans email</li>
+                                <li>❌ Produit sans prix</li>
+                            </ul>
+                            <p><strong>Solutions :</strong></p>
+                            <ul style="font-size: 0.9em; color: #28a745;">
+                                <li>✅ Champs obligatoires</li>
+                                <li>✅ Workflows de relance</li>
+                                <li>✅ Validation pré-traitement</li>
+                            </ul>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>5️⃣ Traçabilité</h4>
+                            <p><strong>Problème :</strong> Pas d'historique</p>
+                            <p><strong>Exemples :</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>❌ Qui a modifié quoi ?</li>
+                                <li>❌ Quand changement ?</li>
+                                <li>❌ Pourquoi supprimé ?</li>
+                            </ul>
+                            <p><strong>Solutions :</strong></p>
+                            <ul style="font-size: 0.9em; color: #28a745;">
+                                <li>✅ Airtable : Historique auto</li>
+                                <li>✅ Make : Logs timestampés</li>
+                                <li>✅ Workflows audit</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION WORKFLOW PROJET -->
+            <div id="workflow" class="section">
+                <div class="card">
+                    <h3>🔄 Workflow Validation Projet - 4 Phases</h3>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h4>📋 Phase 1 : Évaluation</h4>
+                            <p><em>AVANT signature contrat</em></p>
+                            <ul class="checklist">
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Audit sécurité outils pressentis</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Définition matrice des rôles</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Vérification conformité RGPD</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Estimation coûts sécurisation</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Validation client des contraintes</li>
+                            </ul>
+                            <div class="alert alert-success" style="margin: 10px 0; padding: 10px;">
+                                <strong>✅ Livrable :</strong> Rapport de faisabilité sécurisée
+                            </div>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>⚙️ Phase 2 : Configuration</h4>
+                            <p><em>Pendant développement</em></p>
+                            <ul class="checklist">
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Création des rôles selon matrice</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Configuration validations données</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Test permissions avec comptes test</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Mise en place traçabilité</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Documentation technique</li>
+                            </ul>
+                            <div class="alert alert-success" style="margin: 10px 0; padding: 10px;">
+                                <strong>✅ Livrable :</strong> Environnement de test sécurisé
+                            </div>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>🧪 Phase 3 : Validation</h4>
+                            <p><em>AVANT mise en production</em></p>
+                            <ul class="checklist">
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Test sécurité avec vrais utilisateurs</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Vérification procédures sauvegarde</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Formation équipe bonnes pratiques</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Documentation utilisateur final</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Plan de reprise d'activité</li>
+                            </ul>
+                            <div class="alert alert-success" style="margin: 10px 0; padding: 10px;">
+                                <strong>✅ Livrable :</strong> Certificat de validation sécurité
+                            </div>
+                        </div>
+
+                        <div class="tool-card">
+                            <h4>📈 Phase 4 : Maintenance</h4>
+                            <p><em>Après mise en production</em></p>
+                            <ul class="checklist">
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Revue mensuelle des accès</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Monitoring alertes sécurité</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Mise à jour sécurité outils</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Audit trimestriel complet</li>
+                                <li><div class="checkbox" onclick="toggleCheck(this)"></div> Formation continue équipe</li>
+                            </ul>
+                            <div class="alert alert-success" style="margin: 10px 0; padding: 10px;">
+                                <strong>✅ Livrable :</strong> Rapports de maintenance réguliers
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <strong>🎯 Objectif :</strong> 0 incident de sécurité, 100% de conformité, satisfaction client maximale !
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton d'accès rapide -->
+    <div class="quick-access" onclick="showSection('checklist')" title="Retour à la checklist">
+        📋
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function toggleCheck(checkbox) {
+            checkbox.classList.toggle('checked');
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('#checklist .checkbox');
+            const checkedBoxes = document.querySelectorAll('#checklist .checkbox.checked');
+            const progress = checkboxes.length > 0 ? (checkedBoxes.length / checkboxes.length) * 100 : 0;
+            
+            const progressFill = document.getElementById('checklistProgress');
+            const progressText = document.getElementById('progressText');
+            
+            if (progressFill && progressText) {
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '% complété';
+                
+                // Change color based on progress
+                if (progress < 80) {
+                    progressFill.style.background = 'linear-gradient(90deg, #dc3545, #fd7e14)';
+                } else {
+                    progressFill.style.background = 'linear-gradient(90deg, #28a745, #20c997)';
+                }
+            }
+        }
+
+        // Initialize progress on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+
+        // Add smooth scrolling
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelector('.content').scrollTop = 0;
+            });
+        });
+    </script>
+</body>
+</html>
